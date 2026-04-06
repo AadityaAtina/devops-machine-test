@@ -1,0 +1,40 @@
+---
+- name: Configure bootstrap host for DevOps operations
+  hosts: bootstrap
+  become: true
+
+  tasks:
+    - name: Install base packages
+      apt:
+        name:
+          - curl
+          - unzip
+          - jq
+          - apt-transport-https
+          - ca-certificates
+          - gnupg
+        state: present
+        update_cache: true
+
+    - name: Install kubectl
+      # TODO: Candidate should complete this task idempotently
+      # Hint: Download the binary, verify checksum, install to /usr/local/bin
+      debug:
+        msg: "TODO - Install kubectl here"
+
+    - name: Install Helm
+      # TODO: Candidate should complete this task idempotently
+      # Hint: Use the official Helm install script or package manager
+      debug:
+        msg: "TODO - Install Helm here"
+
+    - name: Verify kubectl is installed
+      command: kubectl version --client
+      register: kubectl_version
+      changed_when: false
+      ignore_errors: true
+
+    - name: Show kubectl version
+      debug:
+        msg: "{{ kubectl_version.stdout }}"
+      when: kubectl_version.rc == 0
