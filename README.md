@@ -60,21 +60,6 @@ Your team has a small internal API that must be deployed to **Azure Kubernetes S
 - Working `azure-pipelines.yml`
 - Updated `README.md` with setup instructions
 
----
-
-## Evaluation Criteria
-
-| Area | Points |
-|------|--------|
-| Docker best practices | 20 |
-| Kubernetes correctness & reliability | 25 |
-| Terraform structure & variable usage | 20 |
-| Azure DevOps pipeline design | 25 |
-| Ansible idempotence & readability | 10 |
-| **Total** | **100** |
-
----
-
 ## Bonus Points
 
 - Helm chart instead of raw manifests
