@@ -1,0 +1,73 @@
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  imageRepository: machine-test-api
+  dockerfilePath: app/Dockerfile
+  tag: $(Build.BuildId)
+  # TODO: Set these in Azure DevOps Variable Groups or Pipeline Variables (do NOT hardcode)
+  # acrName: your-acr-name
+  # resourceGroupName: your-rg-name
+  # aksName: your-aks-name
+
+stages:
+  - stage: Build
+    displayName: Build and Test
+    jobs:
+      - job: BuildAndTest
+        displayName: Install dependencies and run tests
+        steps:
+          - checkout: self
+
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '20.x'
+            displayName: Use Node.js 20
+
+          - script: |
+              cd app
+              npm install
+              npm test
+            displayName: Install and test
+
+  - stage: Docker
+    displayName: Build and Push Docker Image
+    dependsOn: Build
+    jobs:
+      - job: DockerBuildPush
+        displayName: Build image and push to ACR
+        steps:
+          - checkout: self
+
+          # TODO: Candidate should complete this stage
+          # Required steps:
+          # 1. Log in to ACR using Docker service connection or az cli
+          # 2. Build the Docker image: docker build -t $(acrName).azurecr.io/$(imageRepository):$(tag) app/
+          # 3. Push the image: docker push $(acrName).azurecr.io/$(imageRepository):$(tag)
+          - script: echo "TODO - Complete Docker build and push steps"
+            displayName: "TODO: Build and push Docker image to ACR"
+
+  - stage: Deploy
+    displayName: Deploy to AKS
+    dependsOn: Docker
+    jobs:
+      - deployment: DeployToAKS
+        displayName: Deploy to Azure Kubernetes Service
+        environment: production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                # TODO: Candidate should complete this stage
+                # Required steps:
+                # 1. Install kubectl
+                # 2. Get AKS credentials: az aks get-credentials ...
+                # 3. Apply k8s manifests: kubectl apply -f k8s/
+                # 4. Update the image: kubectl set image deployment/machine-test-api ...
+                # 5. Verify rollout: kubectl rollout status deployment/machine-test-api
+                # 6. Smoke test health endpoint
+                - script: echo "TODO - Complete deployment steps to AKS"
+                  displayName: "TODO: Deploy manifests and verify health"
