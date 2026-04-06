@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: machine-test-api
+  labels:
+    app: machine-test-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: machine-test-api
+  template:
+    metadata:
+      labels:
+        app: machine-test-api
+    spec:
+      containers:
+        - name: machine-test-api
+          image: REPLACE_WITH_ACR_IMAGE  # TODO: Set your ACR image path here
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+          # TODO: Add readiness and liveness probes
+          # readinessProbe:
+          #   httpGet:
+          #     path: /health
+          #     port: 3000
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          # livenessProbe:
+          #   httpGet:
+          #     path: /health
+          #     port: 3000
+          #   initialDelaySeconds: 15
+          #   periodSeconds: 20
+          # TODO: Add resource requests and limits
+          # resources:
+          #   requests:
+          #     memory: "64Mi"
+          #     cpu: "100m"
+          #   limits:
+          #     memory: "128Mi"
+          #     cpu: "250m"
