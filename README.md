@@ -47,7 +47,7 @@ Your team has a small internal API that must be deployed to **Azure Kubernetes S
    - Deploy to AKS
    - Verify rollout and health endpoint (`/health`)
    - Support rollback on failure
-7. **Document** setup, assumptions, and commands in `README.md`.
+7. **Document** setup, assumptions, and commands in `README.md`,And create Pdf file having Screenshots of Important steps with short Explanation .
 
 ---
 
@@ -83,4 +83,5 @@ Your team has a small internal API that must be deployed to **Azure Kubernetes S
 
 ## Submission
 
-Fork this repository, complete your work on a branch, and share the link to your fork/branch along with a short explanation of your approach.
+Fork this repository, complete your work on a branch, and share the link to your fork/branch along with a short explanation of your approach. Create Pdf file having Screenshots of Important steps with short Explanation .
+
