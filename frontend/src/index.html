@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevOps Machine Test App</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    .status { padding: 10px; border-radius: 4px; margin: 10px 0; }
+    .ok { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <h1>Azure Microservices App</h1>
+  <p>Frontend is running. Checking backend...</p>
+  <div id="status" class="status">Loading...</div>
+
+  <script>
+    const API_URL = window.BACKEND_URL || '/api';
+
+    async function checkBackend() {
+      const el = document.getElementById('status');
+      try {
+        const res = await fetch(`${API_URL}/message`);
+        const data = await res.json();
+        el.className = 'status ok';
+        el.textContent = `Backend OK: ${data.message}`;
+      } catch (err) {
+        el.className = 'status error';
+        el.textContent = `Backend unreachable: ${err.message}`;
+      }
+    }
+
+    checkBackend();
+  </script>
+</body>
+</html>
