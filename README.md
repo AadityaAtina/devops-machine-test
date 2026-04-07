@@ -127,46 +127,7 @@ devops-machine-test/
 │   └── outputs.tf
 ├── azure-pipelines.yml
 └── README.md
-```
-
----
-
-## Evaluation Criteria
-
-| Area | Points |
-|------|--------|
-| Terraform infrastructure design | 20 |
-| Dockerization | 10 |
-| Kubernetes deployment quality | 20 |
-| CI/CD pipeline | 20 |
-| Security and secrets handling | 10 |
-| Monitoring and alerts | 10 |
-| Debugging and scaling fix | 10 |
-| **Total** | **100** |
-
----
-
-## Bonus Points
-
-- Helm chart instead of raw manifests
-- Separate environments (dev / staging / prod)
-- Remote Terraform state
-- Managed Identity integration
-- Canary or blue-green deployment strategy
-- Automated smoke tests after deployment
-
----
-
-## Red Flags
-
-- Hardcoded secrets or passwords
-- No probes, no HPA, or no resource limits
-- No deployment verification
-- No explanation of the instability root cause
-- Weak Terraform structure with no variables or outputs
-- Missing observability or alerting setup
-
----
+ 
 
 ## Deliverables
 
@@ -190,4 +151,4 @@ Submit a GitHub repository containing:
 
 Fork this repository, complete the task on your own branch, and share the repository or branch URL along with a **short explanation of your approach**.
 
-> A strong candidate finishes in 4–5 hours. The timebox is 8–12 hours. Correctness, security, clarity, and reasoning matter more than speed.
+ 
