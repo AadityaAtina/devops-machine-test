@@ -1,27 +1,49 @@
+# Backend Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: machine-test-api
+  name: backend
+  namespace: app
   labels:
-    app: machine-test-api
+    app: backend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: machine-test-api
+      app: backend
   template:
     metadata:
       labels:
-        app: machine-test-api
+        app: backend
     spec:
       containers:
-        - name: machine-test-api
-          image: REPLACE_WITH_ACR_IMAGE  # TODO: Set your ACR image path here
+        - name: backend
+          image: <ACR_NAME>.azurecr.io/backend:latest  # TODO: Replace with your ACR image
           ports:
             - containerPort: 3000
           env:
             - name: PORT
               value: "3000"
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: host
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: database
           # TODO: Add readiness and liveness probes
           # readinessProbe:
           #   httpGet:
@@ -38,8 +60,47 @@ spec:
           # TODO: Add resource requests and limits
           # resources:
           #   requests:
-          #     memory: "64Mi"
           #     cpu: "100m"
-          #   limits:
           #     memory: "128Mi"
-          #     cpu: "250m"
+          #   limits:
+          #     cpu: "500m"
+          #     memory: "256Mi"
+---
+# Frontend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: app
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: <ACR_NAME>.azurecr.io/frontend:latest  # TODO: Replace with your ACR image
+          ports:
+            - containerPort: 80
+          # TODO: Add readiness and liveness probes
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 80
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          # TODO: Add resource requests and limits
+          # resources:
+          #   requests:
+          #     cpu: "50m"
+          #     memory: "64Mi"
+          #   limits:
+          #     cpu: "200m"
+          #     memory: "128Mi"
