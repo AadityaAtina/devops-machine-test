@@ -1,87 +1,193 @@
-# DevOps Machine Test — Azure DevOps
+# DevOps Machine Test — Azure Microservices Deployment
 
 ## Objective
 
-Build, provision, configure, and deploy a small Node.js API to Azure using:
-- Docker
-- Kubernetes (AKS)
-- Terraform
-- Ansible
-- Azure DevOps Pipelines
+Design and implement a production-ready deployment pipeline on Microsoft Azure for a simple microservices-based application with full observability, security, and failure handling.
 
 ---
 
 ## Scenario
 
-Your team has a small internal API that must be deployed to **Azure Kubernetes Service (AKS)**. A Linux bootstrap host is also used for operational setup tasks. You must provision infrastructure with Terraform, configure a host with Ansible, containerize the app with Docker, and deliver it via Azure DevOps CICD.
+Your team owns a small internal application that must run on Azure Kubernetes Service (AKS). The application consists of three parts:
 
-**Timebox: 4–6 hours**
+- **Frontend** — React or static web app
+- **Backend API** — Node.js or Python
+- **MySQL Database**
 
----
+You are expected to provision infrastructure, containerize services, deploy them to AKS, configure CI/CD, and demonstrate observability and security practices.
 
-## What is already provided
-
-- A small Node.js Express API (`app/src/server.js`)
-- Basic folder structure
-- Incomplete Docker, Kubernetes, Terraform, Ansible, and Azure DevOps pipeline scaffold
+**Timebox: 8–12 hours**
 
 ---
 
-## Your Tasks
+## ⚠️ Important — Debugging Requirement
 
-1. **Improve the Dockerfile** so the app is production-ready (multi-stage build, non-root user, minimal image size).
-2. **Add test/lint step support** in the pipeline.
-3. **Complete Terraform** to provision at minimum:
-   - Resource Group
-   - Azure Container Registry (ACR)
-   - Azure Kubernetes Service (AKS)
-4. **Complete Kubernetes manifests** to deploy the API with:
-   - Readiness and liveness probes
-   - Resource requests and limits
-   - A Service of type ClusterIP (or LoadBalancer)
-5. **Complete Ansible** to configure a Linux bootstrap host with required tooling (kubectl, helm, etc.).
-6. **Complete the Azure DevOps pipeline** to:
-   - Build and test the app
-   - Build and tag the Docker image
-   - Push image to ACR
-   - Deploy to AKS
-   - Verify rollout and health endpoint (`/health`)
-   - Support rollback on failure
-7. **Document** setup, assumptions, and commands in `README.md`,And create Pdf file having Screenshots of Important steps with short Explanation .
+After scaling the backend to **5 or more pods**, the application becomes **unstable**.
+
+You must:
+1. Reproduce the issue
+2. Identify the root cause
+3. Fix the issue
+4. Clearly explain the debugging process, findings, and resolution in the README
 
 ---
 
-## Expected Deliverables
+## What is Already Provided
 
-- Updated `Dockerfile`
-- Working `k8s/` manifests
-- Working `terraform/` code
-- Working `ansible/playbook.yaml`
-- Working `azure-pipelines.yml`
-- Updated `README.md` with setup instructions
+- `frontend/` — Basic static frontend app (Dockerfile partially complete)
+- `backend/` — Node.js Express API with MySQL connection (intentional bug present)
+- `k8s/` — Partial Kubernetes manifests (probes, limits, secrets wiring incomplete)
+- `terraform/` — Partial Terraform (Resource Group + VNet done; AKS, ACR, MySQL, Key Vault are TODOs)
+- `azure-pipelines.yml` — Pipeline scaffold (stages present, steps incomplete)
+
+---
+
+## Requirements
+
+### 1. Infrastructure (Terraform)
+
+Provision the following using Terraform:
+
+- Resource Group
+- Virtual Network (VNet)
+- Azure Kubernetes Service (AKS)
+- Azure Container Registry (ACR)
+- Azure Database for MySQL
+- Azure Key Vault (preferred) or equivalent secure secret mechanism
+
+### 2. Containers (Docker)
+
+- Dockerize frontend and backend services
+- Push images to ACR
+- Use production-ready, multi-stage Dockerfiles
+- Use non-root containers where possible
+- Keep images reasonably optimized
+
+### 3. Kubernetes
+
+Deploy the application to AKS with:
+
+- Separate frontend and backend Deployments
+- Ingress configuration (expose frontend and backend)
+- Readiness and liveness probes
+- Resource requests and limits
+- Horizontal Pod Autoscaler (HPA)
+- Proper service-to-service connectivity
+- Secure DB configuration (no hardcoded credentials)
+
+### 4. CI/CD (Azure DevOps Pipelines)
+
+Set up Azure DevOps Pipelines to:
+
+- Run validation/build/test steps
+- Build Docker images
+- Push images to ACR
+- Deploy to AKS
+- Verify rollout success and perform health checks after deployment
+- Fail safely and support rollback or recovery handling
+
+### 5. Security
+
+- Do **not** hardcode secrets in source code, Terraform, or Kubernetes manifests
+- Use Key Vault / Managed Identity / secure secret integration where appropriate
+- Store DB credentials securely
+
+### 6. Monitoring & Alerts
+
+Configure:
+
+- Azure Monitor integration
+- Basic logs and metrics visibility
+- Alerts for unhealthy or failing workloads
+
+---
+
+## Suggested Repository Structure
+
+```
+devops-machine-test/
+├── frontend/
+│   ├── Dockerfile
+│   └── src/
+├── backend/
+│   ├── Dockerfile
+│   ├── package.json
+│   └── src/
+├── k8s/
+│   ├── frontend-deployment.yaml
+│   ├── backend-deployment.yaml
+│   ├── ingress.yaml
+│   ├── hpa.yaml
+│   ├── mysql-secret-placeholder.yaml
+│   └── namespace.yaml
+├── terraform/
+│   ├── providers.tf
+│   ├── variables.tf
+│   ├── main.tf
+│   └── outputs.tf
+├── azure-pipelines.yml
+└── README.md
+```
+
+---
+
+## Evaluation Criteria
+
+| Area | Points |
+|------|--------|
+| Terraform infrastructure design | 20 |
+| Dockerization | 10 |
+| Kubernetes deployment quality | 20 |
+| CI/CD pipeline | 20 |
+| Security and secrets handling | 10 |
+| Monitoring and alerts | 10 |
+| Debugging and scaling fix | 10 |
+| **Total** | **100** |
+
+---
 
 ## Bonus Points
 
 - Helm chart instead of raw manifests
-- Separate dev/prod environment variables
-- Rollback support in pipeline
-- Smoke test after deployment
-- Non-root container user
-- Remote Terraform state (Azure Blob)
+- Separate environments (dev / staging / prod)
+- Remote Terraform state
+- Managed Identity integration
+- Canary or blue-green deployment strategy
+- Automated smoke tests after deployment
 
 ---
 
-## Red Flags (avoid these)
+## Red Flags
 
-- Hardcoded secrets in YAML or Terraform
-- Kubernetes manifests with no probes or resource limits
-- Terraform with no variables or outputs
-- Ansible used as plain shell with no idempotence
-- Pipeline that builds but has no deployment validation
+- Hardcoded secrets or passwords
+- No probes, no HPA, or no resource limits
+- No deployment verification
+- No explanation of the instability root cause
+- Weak Terraform structure with no variables or outputs
+- Missing observability or alerting setup
+
+---
+
+## Deliverables
+
+Submit a GitHub repository containing:
+
+- Application source code (frontend + backend)
+- Dockerfiles
+- Kubernetes manifests or Helm chart
+- Terraform code
+- Azure DevOps pipeline YAML
+- Updated README with:
+  - Setup steps
+  - Architecture overview
+  - Deployment steps
+  - Debugging explanation (scaling instability)
+  - Assumptions and trade-offs
 
 ---
 
 ## Submission
 
-Fork this repository, complete your work on a branch, and share the link to your fork/branch along with a short explanation of your approach. Create Pdf file having Screenshots of Important steps with short Explanation .
+Fork this repository, complete the task on your own branch, and share the repository or branch URL along with a **short explanation of your approach**.
 
+> A strong candidate finishes in 4–5 hours. The timebox is 8–12 hours. Correctness, security, clarity, and reasoning matter more than speed.
